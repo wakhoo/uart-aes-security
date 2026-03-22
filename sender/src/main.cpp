@@ -1,5 +1,8 @@
 #include <Arduino.h>
 #include <AESLib.h>
+#include <SoftwareSerial.h>
+
+SoftwareSerial mySerial(10, 11);
 
 AESLib aesLib;
 
@@ -17,11 +20,6 @@ void generateIV(byte* iv) {
     for (int i = 0; i < 16; i++) {
         iv[i] = random(0, 256);
     }
-}
-
-void sendPacket(byte* iv, byte* ciphertext, int cipherLen) {
-    Serial.write(iv, 16);
-    Serial.write(ciphertext, cipherLen);
 }
 
 void setup()
@@ -42,9 +40,10 @@ void loop()
 
     aesLib.encrypt((byte*)msg, sizeof(msg), encrypted, key, 128, iv_tmp);
 
-    sendPacket(iv, encrypted, 16);
+    mySerial.write(iv, 16);
+    mySerial.write(encrypted, 16);
     
-    Serial.print("\n[IV]  ");
+Serial.print("[IV]  ");
     for (int i = 0; i < 16; i++) {
         if (iv[i] < 0x10) Serial.print("0");
         Serial.print(iv[i], HEX);

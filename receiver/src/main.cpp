@@ -1,6 +1,8 @@
 #include <Arduino.h>
 #include <AESLib.h>
+#include <SoftwareSerial.h>
 
+SoftwareSerial mySerial(10, 11);
 AESLib aesLib;
 
 /*
@@ -28,6 +30,7 @@ byte decrypted[16];
 void setup()
 {
     Serial.begin(9600);
+    mySerial.begin(9600);
     aesLib.set_paddingmode((paddingMode)0);
 }
 /*
@@ -37,14 +40,14 @@ void setup()
 
 void loop()
 {
-    if (Serial.available() >= 32) {
+    if (mySerial.available() >= 32) {
 
         for (int i = 0; i < 16; i++) {
-            iv_received[i] = Serial.read();
+            iv_received[i] = mySerial.read();
         }
 
         for (int i = 0; i < 16; i++) {
-            encrypted[i] = Serial.read();
+            encrypted[i] = mySerial.read();
         }
 
         byte iv_tmp[16];
